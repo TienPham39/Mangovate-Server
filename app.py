@@ -9,24 +9,21 @@ from io import BytesIO
 import base64
 import os
 
-# Khởi tạo Flask app
 app = Flask(__name__)
-CORS(app)  # Cho phép frontend gọi từ domain khác (localhost:3000, v.v.)
+CORS(app) 
 
-# Load mô hình MobileNetV2
 model = tf.keras.models.load_model('best_mobilnetv2_model.keras')
 
 # Danh sách nhãn tương ứng với các lớp mô hình
 labels = ['Disease', 'Partially Ripe', 'Ripe', 'Unripe']
 
-@app.route('/hello')
-def home():
-    return "hello", 200
-
-# @app.route('/')
+# @app.route('/hello')
 # def home():
-#     return "Server is running. Access API at /api/predict", 200
+#     return "hello", 200
 
+@app.route('/')
+def home():
+    return "Server is running. Access API at /api/predict", 200
 
 @app.route('/api/predict', methods=['POST'])  
 def predict():
