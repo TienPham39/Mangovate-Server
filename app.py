@@ -7,6 +7,7 @@ from flask_cors import CORS
 
 from io import BytesIO
 import base64
+import os
 
 # Khởi tạo Flask app
 app = Flask(__name__)
