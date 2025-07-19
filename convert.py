@@ -1,18 +1,26 @@
-from tensorflow.keras.models import load_model, Model
-from tensorflow.keras.layers import Input
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Dense, Dropout
+import tensorflow as tf
 
-try:
-    print("Loading .keras model...")
-    original_model = load_model("best_mobilnetv2_model.keras", compile=False)
+# Tạo lại kiến trúc gốc
+base_model = MobileNetV2(
+    input_shape=(224, 224, 3),
+    include_top=False,
+    weights=None,  # Không dùng imagenet vì bạn sẽ load trọng số riêng
+    pooling='avg'
+)
 
-    print("Rebuilding model without batch_shape...")
-    x = Input(shape=(224, 224, 3))
-    y = original_model(x)
-    final_model = Model(inputs=x, outputs=y)
+x = Dense(224, activation='relu')(base_model.output)
+x = Dense(128, activation='relu')(x)
+x = Dropout(0.4)(x)
+outputs = Dense(4, activation='softmax')(x)
 
-    print("Saving new clean .h5 model...")
-    final_model.save("best_mobilnetv2_model.h5")
-    print("Done! Saved as 'best_mobilnetv2_model.h5'")
+model = Model(inputs=base_model.input, outputs=outputs)
 
-except Exception as e:
-    print("Error during conversion:", e)
+# Load trọng số từ file đã train
+model.load_weights("best_mobilnetv2_model.keras")
+
+# Save lại HDF5 chuẩn, KHÔNG có batch_shape
+model.save("best_mobilnetv2_model.h5")
+print("Final clean .h5 model saved.")
