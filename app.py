@@ -48,26 +48,32 @@ async def analyze(file: UploadFile = File(...)):
         tf.keras.backend.clear_session()
         model = load_model(str(MODEL_PATH), compile=False)
 
-        prediction = model.predict(processed)
+        prediction = model.predict(processed)[0]
         class_index = int(np.argmax(prediction))
         confidence = float(np.max(prediction) * 100)
         predicted_label = labels_map[class_index]
 
         # Annotate ảnh
-        draw = ImageDraw.Draw(img)
-        label_text = f"{predicted_label} ({confidence:.2f}%)"
-        draw.rectangle([(0, 0), (img.width, 30)], fill=(255, 255, 255, 180))
-        draw.text((10, 5), label_text, fill="black")
+        # draw = ImageDraw.Draw(img)
+        # label_text = f"{predicted_label} ({confidence:.2f}%)"
+        # draw.rectangle([(0, 0), (img.width, 30)], fill=(255, 255, 255, 180))
+        # draw.text((10, 5), label_text, fill="black")
 
         # Convert to base64
         buffered = BytesIO()
         img.save(buffered, format="PNG")
         img_base64 = base64.b64encode(buffered.getvalue()).decode()
 
+        # Tạo dict chứa phần trăm từng lớp
+        class_confidences = {
+            labels_map[i]: round(float(prediction[i]) * 100, 2) for i in range(len(prediction))
+        }
+
         return {
             "predicted_class": predicted_label,
             "confidence": round(confidence, 2),
-            "annotated_image": img_base64
+            "annotated_image": img_base64,
+            "all_confidences": class_confidences
         }
 
     except Exception as e:
