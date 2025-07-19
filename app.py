@@ -12,9 +12,7 @@ import os
 app = Flask(__name__)
 CORS(app) 
 
-model = tf.keras.models.load_model('best_mobilnetv2_model.keras', compile=False)
-
-model.save("best_mobilnetv2_model.h5", save_format='h5')
+model = tf.keras.models.load_model('best_mobilnetv2_model.h5', compile=False)
 
 # Danh sách nhãn tương ứng với các lớp mô hình
 labels = ['Disease', 'Partially Ripe', 'Ripe', 'Unripe']
