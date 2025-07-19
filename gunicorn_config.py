@@ -1,2 +1,5 @@
-timeout = 120  # Tăng thời gian timeout lên 120 giây
-workers = 2  # Điều chỉnh số lượng worker nếu cần thiết
+timeout = 120  
+workers = 2  
+bind = "0.0.0.0:10000"   
+keepalive = 5           
+worker_class = "uvicorn.workers.UvicornWorker"

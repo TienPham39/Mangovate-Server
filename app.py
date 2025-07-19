@@ -20,7 +20,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://mangovate-fe.vercel.app"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -28,6 +28,8 @@ app.add_middleware(
 MODEL_PATH = Path("best_mobilnetv2_model.keras")
 if not MODEL_PATH.exists():
     raise FileNotFoundError(f"Không tìm thấy mô hình tại {MODEL_PATH}")
+
+model = load_model(str(MODEL_PATH), compile=False)
 
 labels_map = {0: "Disease", 1: "Partially Ripe", 2: "Ripe", 3: "Unripe"}
 
@@ -43,9 +45,6 @@ async def analyze(file: UploadFile = File(...)):
     try:
         img = Image.open(file.file).convert("RGB")
         processed = preprocess_image(img)
-
-        tf.keras.backend.clear_session()
-        model = load_model(str(MODEL_PATH), compile=False)
 
         prediction = model.predict(processed)
         class_index = int(np.argmax(prediction))
