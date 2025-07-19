@@ -17,10 +17,6 @@ model = tf.keras.models.load_model('best_mobilnetv2_model.keras', compile=False)
 # Danh sách nhãn tương ứng với các lớp mô hình
 labels = ['Disease', 'Partially Ripe', 'Ripe', 'Unripe']
 
-# @app.route('/hello')
-# def home():
-#     return "hello", 200
-
 @app.route('/')
 def home():
     return "Server is running. Access API at /api/predict", 200
@@ -63,6 +59,6 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 
-# if __name__ == '__main__':
-#     port = int(os.environ.get("PORT", 10000))
-#     app.run(debug=True, host='0.0.0.0', port=port)
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 10000))
+    app.run(debug=True, host='0.0.0.0', port=port)
