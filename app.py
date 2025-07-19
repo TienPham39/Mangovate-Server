@@ -64,3 +64,8 @@ def predict():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(debug=True, host='0.0.0.0', port=port)
+
+
+from tensorflow.keras.models import load_model
+model = load_model('best_mobilnetv2_model.h5')
+print(model.summary())
